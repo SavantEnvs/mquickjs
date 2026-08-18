@@ -1,0 +1,40 @@
+# .dockerignore for the commit-image build.
+# Goal: bake in the FULL repo (including .git history — the grader uses it),
+# dropping only local build artifacts and editor/OS cruft. Dev image, not minimal.
+# Lands at the fork root (the build context) when the template is copied in.
+
+# ── Build outputs / local cruft ──────────────────────────────────────────────
+# Keep build artifacts out of the context — the COPY boundary is what separates
+# source from artifacts. build.sh produces its outputs under /mayhem at build time.
+# Adjust the patterns per project.
+build/
+out/
+*.o
+*.a
+*.so
+*.dylib
+*.d
+**/__pycache__/
+
+# ── mquickjs's own Makefile artifacts (generated fresh by mayhem/build.sh) ──
+# `make mqjs` bootstraps a host tool + two generated headers, all written at
+# the repo root with bare names -- excluded so a stray local `make` run on a
+# contributor's workstation can never leak stale copies into the image
+# (mayhem/build.sh always regenerates them itself).
+/mqjs
+/mqjs_stdlib
+/mqjs_stdlib.h
+/mquickjs_atom.h
+/mquickjs_build_atoms
+/example
+/example_stdlib
+/example_stdlib.h
+/dtoa_test
+/libm_test
+/rempio2_test
+/test_builtin.bin
+
+# ── Editor / OS noise ────────────────────────────────────────────────────────
+.DS_Store
+*.swp
+*~
